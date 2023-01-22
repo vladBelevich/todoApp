@@ -20,8 +20,8 @@ export default class App extends Component {
     todoData: [],
   };
 
-  addItem = (text) => {
-    const newItem = this.createTodoItem(text);
+  addItem = (text, minutes, seconds) => {
+    const newItem = this.createTodoItem(text, minutes, seconds);
     this.setState(({ todoData }) => {
       const newArr = [...todoData];
       newArr.push(newItem);
@@ -97,10 +97,12 @@ export default class App extends Component {
     });
   };
 
-  createTodoItem(label) {
+  createTodoItem(label, minutes, seconds) {
     this.maxId += 1;
     return {
       label,
+      minutes,
+      seconds,
       done: false,
       id: this.maxId,
       hidden: false,
