@@ -22,14 +22,6 @@ function Timer({ minutes = 0, seconds = 0 }) {
   });
 
   return (
-    // <div>
-    //   <p>{`${m.toString().padStart(2, '0')}:${s
-    //     .toString()
-    //     .padStart(2, '0')}`}</p>
-    //   <button onClick={() => setPaused(!paused)} type='button'>
-    //     {paused ? 'Resume' : 'Pause'}
-    //   </button>
-    // </div>
     <span className='description'>
       <button
         onClick={() => setPaused(false)}
