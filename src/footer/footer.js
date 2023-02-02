@@ -1,8 +1,10 @@
 import './footer.css';
+import { AppContext } from '../app-context/app-context';
+import { useContext } from 'react';
 
-function Footer(props) {
+function Footer() {
   const { leftCount, onVisible, onActive, onCompleted, clearCompletedItems } =
-    props;
+    useContext(AppContext);
 
   return (
     <footer className='footer'>

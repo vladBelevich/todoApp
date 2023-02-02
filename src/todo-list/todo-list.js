@@ -1,15 +1,18 @@
 import Task from '../task';
+import { AppContext } from '../app-context/app-context';
+import { useContext } from 'react';
 
 import './todo-list.css';
 
-function TodoList({ todosData, onDeleted, onToggleDone }) {
-  const elements = todosData.map((item) => {
+function TodoList() {
+  const { todoData, deleteItem, onToggleDone } = useContext(AppContext);
+  const elements = todoData.map((item) => {
     const id = item.id;
     return (
       <Task
         key={id}
         item={item}
-        onDeleted={() => onDeleted(id)}
+        onDeleted={() => deleteItem(id)}
         onToggleDone={() => onToggleDone(id)}
       />
     );

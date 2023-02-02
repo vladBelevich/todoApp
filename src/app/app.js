@@ -1,5 +1,6 @@
 import AppHeader from '../app-header';
 import Main from '../main';
+import { AppProvider } from '../app-context/app-context';
 import { Component } from 'react';
 
 import './app.css';
@@ -116,17 +117,22 @@ export default class App extends Component {
     const leftCount = todoData.length - doneCount;
     return (
       <div className='todoapp'>
-        <AppHeader addItem={this.addItem} />
-        <Main
-          todosData={todoData}
-          onDeleted={this.deleteItem}
-          onToggleDone={this.onToggleDone}
-          leftCount={leftCount}
-          onVisible={this.onVisible}
-          onActive={this.onActive}
-          onCompleted={this.onCompleted}
-          clearCompletedItems={this.clearCompletedItems}
-        />
+        <AppProvider
+          value={{
+            todoData,
+            leftCount,
+            deleteItem: this.deleteItem,
+            onToggleDone: this.onToggleDone,
+            addItem: this.addItem,
+            onVisible: this.onVisible,
+            onActive: this.onActive,
+            onCompleted: this.onCompleted,
+            clearCompletedItems: this.clearCompletedItems,
+          }}
+        >
+          <AppHeader />
+          <Main />
+        </AppProvider>
       </div>
     );
   }

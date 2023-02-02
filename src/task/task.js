@@ -15,8 +15,8 @@ function Task({ item, onToggleDone, onDeleted }) {
     minutes: PropTypes.number,
     seconds: PropTypes.number,
   };
-
   const { label, done, hidden, date, minutes, seconds } = item;
+
   let text = label;
   let minutesCount = Number(minutes);
   let secondsCount = Number(seconds);
