@@ -2,6 +2,7 @@ import AppHeader from '../app-header';
 import Main from '../main';
 import { AppProvider } from '../app-context/app-context';
 import { Component } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import './app.css';
 
@@ -15,11 +16,19 @@ const toggleProperty = (arr, id, propName) => {
 };
 
 export default class App extends Component {
-  maxId = 100;
-
-  state = {
+  defaultState = {
     todoData: [],
   };
+
+  todoData = window.localStorage.todoData;
+
+  componentDidMount() {
+    // eslint-disable-next-line
+    console.log(this.todoData);
+    if (!this.todoData) {
+      localStorage.setItem('todoData', this.defaultState.todoData);
+    }
+  }
 
   addItem = (text, minutes, seconds) => {
     const newItem = this.createTodoItem(text, minutes, seconds);
@@ -40,11 +49,10 @@ export default class App extends Component {
 
   onVisible = () => {
     this.setState(({ todoData }) => {
-      const newArr = [];
-      todoData.forEach((el) => {
-        const item = el;
-        item.hidden = false;
-        newArr.push(item);
+      const newArr = todoData.map((el) => {
+        // eslint-disable-next-line no-param-reassign
+        el.hidden = false;
+        return el;
       });
       return {
         todoData: newArr,
@@ -54,11 +62,10 @@ export default class App extends Component {
 
   onCompleted = () => {
     this.setState(({ todoData }) => {
-      const newArr = [];
-      todoData.forEach((el) => {
-        const item = el;
-        item.hidden = item.done === false;
-        newArr.push(item);
+      const newArr = todoData.map((el) => {
+        // eslint-disable-next-line no-param-reassign
+        el.hidden = el.done === false;
+        return el;
       });
       return {
         todoData: newArr,
@@ -68,11 +75,10 @@ export default class App extends Component {
 
   onActive = () => {
     this.setState(({ todoData }) => {
-      const newArr = [];
-      todoData.forEach((el) => {
-        const item = el;
-        item.hidden = item.done === true;
-        newArr.push(item);
+      const newArr = todoData.map((el) => {
+        // eslint-disable-next-line no-param-reassign
+        el.hidden = el.done === true;
+        return el;
       });
       return {
         todoData: newArr,
@@ -91,30 +97,33 @@ export default class App extends Component {
 
   deleteItem = (id) => {
     this.setState(({ todoData }) => {
-      const idx = todoData.findIndex((el) => el.id === id);
-      const newArr = [...todoData];
-      newArr.splice(idx, 1);
+      const newArr = todoData.filter((el) => el.id !== id);
       return { todoData: newArr };
     });
   };
 
+  // eslint-disable-next-line class-methods-use-this
   createTodoItem(label, minutes, seconds) {
-    this.maxId += 1;
     return {
       label,
       minutes,
       seconds,
       done: false,
-      id: this.maxId,
+      id: uuidv4(),
       hidden: false,
       date: new Date(),
     };
   }
 
   render() {
-    const { todoData } = this.state;
+    let todoData;
+    if (this.todoData === undefined) {
+      todoData = this.defaultState.todoData;
+    } else {
+      todoData = this.todoData;
+    }
     const doneCount = todoData.filter((el) => el.done === true).length;
-    const leftCount = todoData.length - doneCount;
+    const leftCount = this.todoData.length - doneCount;
     return (
       <div className='todoapp'>
         <AppProvider

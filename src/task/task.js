@@ -2,27 +2,24 @@ import Timer from '../timer';
 import PropTypes from 'prop-types';
 import './task.css';
 import { formatDistanceToNow } from 'date-fns';
+import classNames from 'classnames';
 
 function Task({ item, onToggleDone, onDeleted }) {
   Task.defaultProps = {
-    label: 'Empty task',
     minutes: 30,
     seconds: 0,
   };
 
   Task.propTypes = {
-    label: PropTypes.string,
     minutes: PropTypes.number,
     seconds: PropTypes.number,
   };
   const { label, done, hidden, date, minutes, seconds } = item;
 
-  let text = label;
+  const text = label;
   let minutesCount = Number(minutes);
   let secondsCount = Number(seconds);
-  if (text === '') {
-    text = Task.defaultProps.label;
-  }
+
   if (secondsCount > 59 || secondsCount < 1) {
     secondsCount = Task.defaultProps.seconds;
   }
@@ -33,14 +30,10 @@ function Task({ item, onToggleDone, onDeleted }) {
     minutesCount = Task.defaultProps.minutes;
   }
 
-  let classNamesLi = '';
-  if (done) {
-    classNamesLi += ' completed';
-  }
-  if (hidden) {
-    classNamesLi += ' hidden';
-  }
-
+  const classNamesLi = classNames({
+    completed: done,
+    hidden,
+  });
   const dateResult = formatDistanceToNow(date, {
     addSuffix: true,
     includeSeconds: true,

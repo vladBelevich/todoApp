@@ -13,7 +13,7 @@ function NewTaskForm() {
   const [data, setData] = useState(defaultData);
 
   const { label, minutes, seconds } = data;
-  const onHandlerChange = (event) => {
+  const onLabelChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
     setData({
@@ -23,6 +23,10 @@ function NewTaskForm() {
   };
 
   const onSubmit = (event) => {
+    if (label === '') {
+      event.preventDefault();
+      return;
+    }
     event.preventDefault();
     addItem(label, minutes, seconds);
     setData(defaultData);
@@ -31,7 +35,7 @@ function NewTaskForm() {
   return (
     <form onSubmit={onSubmit} className='new-todo-form'>
       <input
-        onChange={onHandlerChange}
+        onChange={onLabelChange}
         className='new-todo'
         placeholder='What needs to be done?'
         value={label}
@@ -39,7 +43,7 @@ function NewTaskForm() {
         type='text'
       />
       <input
-        onChange={onHandlerChange}
+        onChange={onLabelChange}
         className='new-todo-form__timer'
         placeholder='Min'
         name='minutes'
@@ -47,7 +51,7 @@ function NewTaskForm() {
         type='number'
       />
       <input
-        onChange={onHandlerChange}
+        onChange={onLabelChange}
         className='new-todo-form__timer'
         placeholder='Sec'
         name='seconds'
