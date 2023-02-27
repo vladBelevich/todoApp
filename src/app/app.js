@@ -16,25 +16,40 @@ const toggleProperty = (arr, id, propName) => {
 };
 
 export default class App extends Component {
-  defaultState = {
-    todoData: [],
-  };
-
-  todoData = window.localStorage.todoData;
+  constructor(props) {
+    super(props);
+    this.state = { todoData: [] };
+  }
 
   componentDidMount() {
-    // eslint-disable-next-line
-    console.log(this.todoData);
-    if (!this.todoData) {
-      localStorage.setItem('todoData', this.defaultState.todoData);
+    const { todoData } = this.state;
+    if (!window.localStorage.todoData) {
+      localStorage.setItem('todoData', JSON.stringify(todoData));
     }
+    let localData = JSON.parse(window.localStorage.getItem('todoData'));
+    localData = this.dateToObject(localData);
+
+    this.setState({ todoData: localData });
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  dateToObject = (array) =>
+    array.map((el) => {
+      // eslint-disable-next-line no-param-reassign
+      el.date = new Date(el.date);
+      return el;
+    });
 
   addItem = (text, minutes, seconds) => {
     const newItem = this.createTodoItem(text, minutes, seconds);
-    this.setState(({ todoData }) => {
-      const newArr = [...todoData];
-      newArr.push(newItem);
+    const localData = JSON.parse(localStorage.getItem('todoData'));
+    // eslint-disable-next-line no-console
+    console.log(newItem);
+    localData.push(newItem);
+    localStorage.setItem('todoData', JSON.stringify(localData));
+    this.setState(() => {
+      let newArr = JSON.parse(localStorage.getItem('todoData'));
+      newArr = this.dateToObject(newArr);
       return {
         todoData: newArr,
       };
@@ -96,10 +111,11 @@ export default class App extends Component {
   };
 
   deleteItem = (id) => {
-    this.setState(({ todoData }) => {
-      const newArr = todoData.filter((el) => el.id !== id);
-      return { todoData: newArr };
-    });
+    let localData = JSON.parse(window.localStorage.getItem('todoData'));
+    localData = localData.filter((el) => el.id !== id);
+    window.localStorage.setItem('todoData', JSON.stringify(localData));
+    localData = this.dateToObject(localData);
+    this.setState({ todoData: localData });
   };
 
   // eslint-disable-next-line class-methods-use-this
@@ -116,14 +132,9 @@ export default class App extends Component {
   }
 
   render() {
-    let todoData;
-    if (this.todoData === undefined) {
-      todoData = this.defaultState.todoData;
-    } else {
-      todoData = this.todoData;
-    }
+    const { todoData } = this.state;
     const doneCount = todoData.filter((el) => el.done === true).length;
-    const leftCount = this.todoData.length - doneCount;
+    const leftCount = todoData.length - doneCount;
     return (
       <div className='todoapp'>
         <AppProvider

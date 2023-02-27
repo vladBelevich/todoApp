@@ -1,13 +1,25 @@
 import './footer.css';
 import { AppContext } from '../app-context/app-context';
 import { useContext } from 'react';
+import classNames from 'classnames';
 
 function Footer() {
-  const { leftCount, onVisible, onActive, onCompleted, clearCompletedItems } =
-    useContext(AppContext);
+  const {
+    leftCount,
+    onVisible,
+    onActive,
+    onCompleted,
+    clearCompletedItems,
+    todoData,
+  } = useContext(AppContext);
 
+  const messageShow = classNames({
+    message: true,
+    hidden: todoData.length > 0,
+  });
   return (
     <footer className='footer'>
+      <div className={messageShow}>There is no Data</div>
       <span className='todo-count'>{leftCount} items left</span>
       <ul className='filters'>
         <li>
