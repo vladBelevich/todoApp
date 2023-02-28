@@ -5,7 +5,14 @@ import { useContext } from 'react';
 import './todo-list.css';
 
 function TodoList() {
-  const { todoData, deleteItem, onToggleDone } = useContext(AppContext);
+  const {
+    todoData,
+    deleteItem,
+    onToggleDone,
+    dateToObject,
+    onEditing,
+    applyChangedText,
+  } = useContext(AppContext);
   const elements = todoData.map((item) => {
     const id = item.id;
     return (
@@ -14,6 +21,10 @@ function TodoList() {
         item={item}
         onDeleted={() => deleteItem(id)}
         onToggleDone={() => onToggleDone(id)}
+        onEditing={() => onEditing(id)}
+        todoData={todoData}
+        dateToObject={dateToObject}
+        applyChangedText={applyChangedText}
       />
     );
   });

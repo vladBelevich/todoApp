@@ -1,5 +1,6 @@
 import AppHeader from '../app-header';
 import Main from '../main';
+import dateToObject from '../../services/services';
 import { AppProvider } from '../app-context/app-context';
 import { Component } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -27,29 +28,20 @@ export default class App extends Component {
       localStorage.setItem('todoData', JSON.stringify(todoData));
     }
     let localData = JSON.parse(window.localStorage.getItem('todoData'));
-    localData = this.dateToObject(localData);
+    localData = dateToObject(localData);
 
     this.setState({ todoData: localData });
   }
-
-  // eslint-disable-next-line class-methods-use-this
-  dateToObject = (array) =>
-    array.map((el) => {
-      // eslint-disable-next-line no-param-reassign
-      el.date = new Date(el.date);
-      return el;
-    });
 
   addItem = (text, minutes, seconds) => {
     const newItem = this.createTodoItem(text, minutes, seconds);
     const localData = JSON.parse(localStorage.getItem('todoData'));
     // eslint-disable-next-line no-console
-    console.log(newItem);
     localData.push(newItem);
     localStorage.setItem('todoData', JSON.stringify(localData));
     this.setState(() => {
       let newArr = JSON.parse(localStorage.getItem('todoData'));
-      newArr = this.dateToObject(newArr);
+      newArr = dateToObject(newArr);
       return {
         todoData: newArr,
       };
@@ -101,6 +93,19 @@ export default class App extends Component {
     });
   };
 
+  onEditing = (id) => {
+    let localData = JSON.parse(window.localStorage.getItem('todoData'));
+    const idx = localData.findIndex((el) => el.id === id);
+    localData[idx] = { ...localData[idx], editing: true, done: false };
+    window.localStorage.setItem('todoData', JSON.stringify(localData));
+    localData = dateToObject(localData);
+    this.setState({ todoData: localData });
+  };
+
+  applyChangedText = (arr) => {
+    this.setState({ todoData: arr });
+  };
+
   clearCompletedItems = () => {
     this.setState(({ todoData }) => {
       const newArr = todoData.filter((el) => el.done === false);
@@ -114,7 +119,7 @@ export default class App extends Component {
     let localData = JSON.parse(window.localStorage.getItem('todoData'));
     localData = localData.filter((el) => el.id !== id);
     window.localStorage.setItem('todoData', JSON.stringify(localData));
-    localData = this.dateToObject(localData);
+    localData = dateToObject(localData);
     this.setState({ todoData: localData });
   };
 
@@ -128,6 +133,7 @@ export default class App extends Component {
       id: uuidv4(),
       hidden: false,
       date: new Date(),
+      editing: false,
     };
   }
 
@@ -148,6 +154,9 @@ export default class App extends Component {
             onActive: this.onActive,
             onCompleted: this.onCompleted,
             clearCompletedItems: this.clearCompletedItems,
+            dateToObject,
+            onEditing: this.onEditing,
+            applyChangedText: this.applyChangedText,
           }}
         >
           <AppHeader />
