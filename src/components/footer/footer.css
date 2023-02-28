@@ -4,11 +4,11 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 15px;
-  height: 20px;
   text-align: center;
   font-size: 15px;
   border-top: 1px solid #e6e6e6;
   color: gray;
+  flex-wrap: wrap;
 }
 
 .footer:before {
@@ -44,6 +44,7 @@
 .filters li {
   display: inline;
   cursor: default;
+  border: none;
 }
 
 .filters li button {
@@ -100,4 +101,9 @@ html .clear-completed:active {
 
 .info a:hover {
   text-decoration: underline;
+}
+.message{
+  width: 100%;
+  border: 1px solid red;
+  font-size: 20px ;
 }
